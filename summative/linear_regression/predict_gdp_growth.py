@@ -23,18 +23,18 @@ def predict_gdp_growth(country, year, model_path=None):
         # Set default model path if not provided
         if model_path is None:
             model_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'best_gdp_growth_model.pkl')
-
+        
         print(f"Loading model from: {model_path}")
-
+        
         # Load the model data
         model_data = joblib.load(model_path)
-
+        
         # Extract components from the model data
         model = model_data['model']
         preprocessor = model_data['preprocessor']
         performance = model_data.get('performance', {})
         model_name = model_data.get('model_name', 'Unknown model')
-
+        
         # Get region mapping (either from model_data or use default)
         region_mapping = model_data.get('region_mapping', {
             'Algeria': 'North Africa', 'Benin': 'West Africa', 'Botswana': 'Southern Africa',
@@ -73,10 +73,10 @@ def predict_gdp_growth(country, year, model_path=None):
 
         # Preprocess the input data
         input_processed = preprocessor.transform(input_data)
-
+        
         # Make prediction
         prediction = float(model.predict(input_processed)[0])
-
+        
         # Calculate confidence interval
         mse = performance.get('mse', 0)
         std_dev = np.sqrt(mse)
@@ -84,7 +84,7 @@ def predict_gdp_growth(country, year, model_path=None):
             "lower_bound": prediction - 1.96 * std_dev,
             "upper_bound": prediction + 1.96 * std_dev
         }
-
+        
         # Return prediction with metadata
         return {
             'country': country,
@@ -107,7 +107,7 @@ if __name__ == "__main__":
         year = int(input("Enter year for prediction: "))
 
         prediction_result = predict_gdp_growth(country, year)
-
+        
         print("\n===== GDP Growth Prediction =====")
         print(f"Country: {prediction_result['country']}")
         print(f"Year: {prediction_result['year']}")
@@ -116,6 +116,6 @@ if __name__ == "__main__":
         print(f"Confidence Interval: {prediction_result['confidence_interval']['lower_bound']:.2f}% to {prediction_result['confidence_interval']['upper_bound']:.2f}%")
         print(f"Model: {prediction_result['model_name']}")
         print("================================")
-
+        
     except Exception as e:
         print(f"Error: {str(e)}")

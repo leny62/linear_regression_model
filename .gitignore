@@ -131,7 +131,7 @@ temp/
 tmp/
 
 # Model files (if you want to exclude them)
-*.pkl
+#*.pkl
 *.joblib
 *.h5
 *.hdf5
